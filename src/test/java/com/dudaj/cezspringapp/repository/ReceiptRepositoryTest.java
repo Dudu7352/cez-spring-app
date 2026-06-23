@@ -22,6 +22,18 @@ class ReceiptRepositoryTest {
     }
 
     @Test
+    void save_shouldReturnCreatedReceipt() {
+        String pesel = "01234567890";
+        NewReceipt newReceipt = new NewReceipt(pesel, "ABC", 500d);
+
+        Receipt savedReceipt = receiptRepository.save(newReceipt);
+
+        assertNotNull(savedReceipt.getId());
+        assertEquals(pesel, savedReceipt.getPesel());
+        assertEquals("ABC", savedReceipt.getMedicineName());
+    }
+
+    @Test
     void save_shouldCreateAndStoreNewReceipt() {
         String pesel = "01234567890";
         NewReceipt newReceipt = new NewReceipt(pesel, "ABC", 500d);

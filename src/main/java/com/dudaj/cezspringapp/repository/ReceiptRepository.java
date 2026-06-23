@@ -21,7 +21,7 @@ public class ReceiptRepository {
         return peselToReceiptMap.get(pesel);
     }
 
-    public void save(NewReceipt newReceipt) {
+    public Receipt save(NewReceipt newReceipt) {
         List<Receipt> receipts = peselToReceiptMap.computeIfAbsent(
                 newReceipt.getPesel(),
                 k -> new LinkedList<>()
@@ -34,6 +34,8 @@ public class ReceiptRepository {
         receipt.setDoseMilligrams(newReceipt.getDoseMilligrams());
         receipts.add(receipt);
         idToPeselMap.put(receipt.getId(), receipt.getPesel());
+
+        return receipt;
     }
 
     public void deleteById(UUID id) {

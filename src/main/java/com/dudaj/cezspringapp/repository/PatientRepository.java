@@ -49,8 +49,12 @@ public class PatientRepository {
         return Optional.ofNullable(peselToPatientMap.get(pesel));
     }
 
-    public boolean save(@Nonnull Patient patient) {
-        return peselToPatientMap.putIfAbsent(patient.getPesel(), patient) == null;
+    public Optional<Patient> save(@Nonnull Patient patient) {
+        if(peselToPatientMap.containsKey(patient.getPesel())) {
+            return Optional.empty();
+        }
+        peselToPatientMap.put(patient.getPesel(), patient);
+        return Optional.of(patient);
     }
 
     public void deleteByPesel(@Nonnull String pesel) {

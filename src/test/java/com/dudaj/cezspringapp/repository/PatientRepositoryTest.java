@@ -25,9 +25,9 @@ class PatientRepositoryTest {
     void save_shouldPassSingleInsertion() {
         Patient patient = new Patient("01234567890", "Jan", "Kowalski");
 
-        boolean insertionResult = patientRepository.save(patient);
+        Optional<Patient> insertionResult = patientRepository.save(patient);
 
-        assertTrue(insertionResult);
+        assertTrue(insertionResult.isPresent());
     }
 
     @Test
@@ -37,9 +37,23 @@ class PatientRepositoryTest {
         Patient patient2 = new Patient(pesel, "Pafnucy", "Grazel");
 
         patientRepository.save(patient1);
-        boolean insertionResult = patientRepository.save(patient2);
+        Optional<Patient> insertionResult = patientRepository.save(patient2);
 
-        assertFalse(insertionResult);
+        assertTrue(insertionResult.isEmpty());
+    }
+
+    @Test
+    void save_shouldReturnSavedPatient() {
+        String pesel = "01234567890";
+        Patient patient = new Patient(pesel, "Jan", "Kowalski");
+
+        Optional<Patient> resultPatientOptional = patientRepository.save(patient);
+
+        assertTrue(resultPatientOptional.isPresent());
+        Patient resultPatient = resultPatientOptional.get();
+        assertEquals(patient.getPesel(), resultPatient.getPesel());
+        assertEquals(patient.getName(), resultPatient.getName());
+        assertEquals(patient.getSurname(), resultPatient.getSurname());
     }
 
     @Test
