@@ -70,7 +70,7 @@ class ReceiptRepositoryTest {
 
         List<Receipt> results = receiptRepository.findByPesel(pesel);
 
-        assertNull(results);
+        assertTrue(results.isEmpty());
     }
 
     @Test
@@ -101,6 +101,6 @@ class ReceiptRepositoryTest {
 
         receiptRepository.deleteByPesel(pesel);
 
-        assertNull(receiptRepository.findByPesel(pesel));
+        assertTrue(receiptRepository.findByPesel(pesel).isEmpty());
     }
 }

@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class ReceiptRepository {
-    Map<String, LinkedList<Receipt>> peselToReceiptMap;
-    Map<UUID, String> idToPeselMap;
+    final Map<String, LinkedList<Receipt>> peselToReceiptMap;
+    final Map<UUID, String> idToPeselMap;
 
     ReceiptRepository() {
         peselToReceiptMap = new ConcurrentHashMap<>();

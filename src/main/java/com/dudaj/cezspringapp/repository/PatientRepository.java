@@ -1,9 +1,8 @@
 package com.dudaj.cezspringapp.repository;
 
 import com.dudaj.cezspringapp.model.Patient;
-import jakarta.annotation.Nonnull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
@@ -15,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class PatientRepository {
 
-    Map<String, Patient> peselToPatientMap;
+    final Map<String, Patient> peselToPatientMap;
 
     PatientRepository() {
         peselToPatientMap = new ConcurrentHashMap<>();
@@ -28,7 +27,7 @@ public class PatientRepository {
      * @param name search query
      * @return a list of found patients that match the query
      */
-    public LinkedList<Patient> findByNameLike(@Nonnull String name) {
+    public LinkedList<Patient> findByNameLike(String name) {
         LinkedList<Patient> result = new LinkedList<>();
         Locale locale = LocaleContextHolder.getLocale();
         name = name.toLowerCase(locale);
@@ -47,7 +46,7 @@ public class PatientRepository {
      * @param surname search query
      * @return a list of found patients that match the query. If none were found, an empty list is returned
      */
-    public LinkedList<Patient> findBySurnameLike(@Nonnull String surname) {
+    public LinkedList<Patient> findBySurnameLike(String surname) {
         LinkedList<Patient> result = new LinkedList<>();
         Locale locale = LocaleContextHolder.getLocale();
         surname = surname.toLowerCase(locale);
@@ -65,7 +64,7 @@ public class PatientRepository {
      * @param pesel patient's PESEL number
      * @return a patient with the specified PESEL wrapped inside Optional container. If no patient was found, Optional.empty() is returned
      */
-    public Optional<Patient> findByPesel(@Nonnull String pesel) {
+    public Optional<Patient> findByPesel(String pesel) {
         return Optional.ofNullable(peselToPatientMap.get(pesel));
     }
 
@@ -75,7 +74,7 @@ public class PatientRepository {
      * @param patient new patient to be saved
      * @return on success a newly inserted patient object is returned wrapped inside Optional container. Otherwise, Optional.empty() is returned
      */
-    public Optional<Patient> save(@Nonnull Patient patient) {
+    public Optional<Patient> save(Patient patient) {
         if(peselToPatientMap.containsKey(patient.getPesel())) {
             return Optional.empty();
         }
@@ -88,7 +87,7 @@ public class PatientRepository {
      *
      * @param pesel patient's PESEL number
      */
-    public void deleteByPesel(@Nonnull String pesel) {
+    public void deleteByPesel(String pesel) {
         peselToPatientMap.remove(pesel);
     }
 }
