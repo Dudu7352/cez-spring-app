@@ -18,7 +18,11 @@ public class ReceiptRepository {
     }
 
     public List<Receipt> findByPesel(String pesel) {
-        return peselToReceiptMap.get(pesel);
+        List<Receipt> receipts = peselToReceiptMap.get(pesel);
+        if(receipts == null) {
+            return new LinkedList<>();
+        }
+        return receipts;
     }
 
     public Receipt save(NewReceipt newReceipt) {
