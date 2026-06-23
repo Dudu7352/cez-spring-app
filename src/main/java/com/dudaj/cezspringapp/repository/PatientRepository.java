@@ -21,6 +21,14 @@ public class PatientRepository {
     }
 
     /**
+     * Finds all saved patients
+     * @return a list of all patients
+     */
+    public LinkedList<Patient> findAll() {
+        return new LinkedList<>(peselToPatientMap.values());
+    }
+
+    /**
      * finds all patients which names contain a specified name fragment.
      * Checking algorithm is case-insensitive and uses default spring locale.
      *
