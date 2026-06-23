@@ -17,6 +17,12 @@ public class ReceiptRepository {
         idToPeselMap = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Finds all receipts associated with the specified PESEL.
+     *
+     * @param pesel patient's PESEL number
+     * @return a list of receipts associated with the specified PESEL. In none were found, an empty list is returned
+     */
     public List<Receipt> findByPesel(String pesel) {
         List<Receipt> receipts = peselToReceiptMap.get(pesel);
         if(receipts == null) {
@@ -25,6 +31,12 @@ public class ReceiptRepository {
         return receipts;
     }
 
+    /**
+     * Saves a new receipt.
+     *
+     * @param newReceipt new receipt to insert
+     * @return a newly inserted receipt object
+     */
     public Receipt save(NewReceipt newReceipt) {
         List<Receipt> receipts = peselToReceiptMap.computeIfAbsent(
                 newReceipt.getPesel(),
@@ -42,6 +54,11 @@ public class ReceiptRepository {
         return receipt;
     }
 
+    /**
+     * Deletes a receipt with the specified ID. This action is idempotent.
+     *
+     * @param id receipt's ID
+     */
     public void deleteById(UUID id) {
         String pesel = idToPeselMap.get(id);
         if(pesel == null) {
@@ -52,6 +69,11 @@ public class ReceiptRepository {
         idToPeselMap.remove(id);
     }
 
+    /**
+     * Deletes all receipts associated with the PESEL number.
+     *
+     * @param pesel patient's PESEL number
+     */
     public void deleteByPesel(String pesel) {
         List<Receipt> receipts = peselToReceiptMap.remove(pesel);
         for(Receipt receipt : receipts) {
