@@ -22,10 +22,22 @@ public class PatientRepository {
 
     /**
      * Finds all saved patients
+     *
      * @return a list of all patients
      */
     public LinkedList<Patient> findAll() {
         return new LinkedList<>(peselToPatientMap.values());
+    }
+
+
+    /**
+     * Checks if patient with the specified PESEL exists.
+     *
+     * @param pesel patient's PESEL
+     * @return a boolean value set to true if the patient exists.
+     */
+    public boolean patientExists(String pesel) {
+        return peselToPatientMap.containsKey(pesel);
     }
 
     /**
@@ -39,8 +51,8 @@ public class PatientRepository {
         LinkedList<Patient> result = new LinkedList<>();
         Locale locale = LocaleContextHolder.getLocale();
         name = name.toLowerCase(locale);
-        for(Patient p: peselToPatientMap.values()) {
-            if(p.getName().toLowerCase(locale).contains(name)) {
+        for (Patient p : peselToPatientMap.values()) {
+            if (p.getName().toLowerCase(locale).contains(name)) {
                 result.add(p);
             }
         }
@@ -58,8 +70,8 @@ public class PatientRepository {
         LinkedList<Patient> result = new LinkedList<>();
         Locale locale = LocaleContextHolder.getLocale();
         surname = surname.toLowerCase(locale);
-        for(Patient p: peselToPatientMap.values()) {
-            if(p.getSurname().toLowerCase(locale).contains(surname)) {
+        for (Patient p : peselToPatientMap.values()) {
+            if (p.getSurname().toLowerCase(locale).contains(surname)) {
                 result.add(p);
             }
         }
@@ -83,7 +95,7 @@ public class PatientRepository {
      * @return on success a newly inserted patient object is returned wrapped inside Optional container. Otherwise, Optional.empty() is returned
      */
     public Optional<Patient> save(Patient patient) {
-        if(peselToPatientMap.containsKey(patient.getPesel())) {
+        if (peselToPatientMap.containsKey(patient.getPesel())) {
             return Optional.empty();
         }
         peselToPatientMap.put(patient.getPesel(), patient);
