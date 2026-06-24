@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PatientRepositoryTest {
 
@@ -79,6 +78,25 @@ class PatientRepositoryTest {
         assertTrue(resultPatientOptional.isEmpty());
     }
 
+    @Test
+    void patientExists_shouldReturnTrue_whenExists() {
+        String pesel = "01234567890";
+        Patient patient = new Patient(pesel, "Jan", "Kowalski");
+        patientRepository.save(patient);
+
+        boolean result = patientRepository.patientExists(pesel);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void patientExists_shouldReturnFalse_whenNotFound() {
+        String pesel = "01234567890";
+
+        boolean result = patientRepository.patientExists(pesel);
+
+        assertFalse(result);
+    }
 
     @Test
     void deletePatientByPesel_shouldDeletePatient() {
