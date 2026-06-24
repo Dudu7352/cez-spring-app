@@ -4,13 +4,12 @@ import com.dudaj.cezspringapp.helper.CollectionHelper;
 import com.dudaj.cezspringapp.model.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PatientRepositoryTest {
 
@@ -101,7 +100,7 @@ class PatientRepositoryTest {
         patientRepository.save(patient2);
         patientRepository.save(patient3);
 
-        LinkedList<Patient> results =  patientRepository.findByNameLike("jan");
+        LinkedList<Patient> results = patientRepository.findByNameLike("jan");
 
         assertEquals(2, results.size());
         assertTrue(CollectionHelper.contains(results, (p) -> p.getPesel().equals(patient1.getPesel())));
@@ -117,10 +116,27 @@ class PatientRepositoryTest {
         patientRepository.save(patient2);
         patientRepository.save(patient3);
 
-        LinkedList<Patient> results =  patientRepository.findBySurnameLike("ski");
+        LinkedList<Patient> results = patientRepository.findBySurnameLike("ski");
 
         assertEquals(2, results.size());
         assertTrue(CollectionHelper.contains(results, (p) -> p.getPesel().equals(patient1.getPesel())));
         assertTrue(CollectionHelper.contains(results, (p) -> p.getPesel().equals(patient2.getPesel())));
+    }
+
+    @Test
+    void findAll_shouldFindAll() {
+        Patient patient1 = new Patient("01234567890", "Jan", "Kowalski");
+        Patient patient2 = new Patient("12345678901", "Mijanusz", "Kowalski");
+        Patient patient3 = new Patient("23456789012", "Zbigniew", "Kowalski");
+        patientRepository.save(patient1);
+        patientRepository.save(patient2);
+        patientRepository.save(patient3);
+
+        LinkedList<Patient> results = patientRepository.findAll();
+
+        assertEquals(3, results.size());
+        assertTrue(CollectionHelper.contains(results, (p) -> p.getPesel().equals(patient1.getPesel())));
+        assertTrue(CollectionHelper.contains(results, (p) -> p.getPesel().equals(patient2.getPesel())));
+        assertTrue(CollectionHelper.contains(results, (p) -> p.getPesel().equals(patient3.getPesel())));
     }
 }
