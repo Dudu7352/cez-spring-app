@@ -10,4 +10,6 @@ open module cez.spring.app {
     requires spring.beans;
     requires spring.web;
     requires java.sql;
+    requires com.fasterxml.jackson.annotation;
+    requires jakarta.validation;
 }

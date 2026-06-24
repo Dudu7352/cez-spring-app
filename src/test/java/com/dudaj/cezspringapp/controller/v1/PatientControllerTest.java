@@ -8,7 +8,6 @@ import com.dudaj.cezspringapp.service.PatientService;
 import com.dudaj.cezspringapp.service.ReceiptService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -19,13 +18,13 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PatientController.class)
-@AutoConfigureRestTestClient
 class PatientControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -42,39 +41,39 @@ class PatientControllerTest {
     @Test
     void getPatients_shouldReturnAllPatients() throws Exception {
         when(patientService.getAllPatients()).thenReturn(List.of(
-                new PatientDto("01234567890", "Jan", "Kowalski"),
-                new PatientDto("12345678900", "Anna", "Kowalska"))
+                new PatientDto("80070881314", "Jan", "Kowalski"),
+                new PatientDto("61102998734", "Anna", "Kowalska"))
         );
 
         mockMvc.perform(get("/api/v1/patients").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.size()").value(2))
-                .andExpect(jsonPath("$[0].pesel").value("01234567890"))
+                .andExpect(jsonPath("$[0].pesel").value("80070881314"))
                 .andExpect(jsonPath("$[0].name").value("Jan"))
                 .andExpect(jsonPath("$[0].surname").value("Kowalski"))
-                .andExpect(jsonPath("$[1].pesel").value("12345678900"))
+                .andExpect(jsonPath("$[1].pesel").value("61102998734"))
                 .andExpect(jsonPath("$[1].name").value("Anna"))
                 .andExpect(jsonPath("$[1].surname").value("Kowalska"));
     }
 
     @Test
     void getPatientByPesel_shouldReturnPatient_whenPresent() throws Exception {
-        String pesel = "01234567890";
+        String pesel = "80070881314";
         when(patientService.getPatient(pesel)).thenReturn(
                 new PatientDto(pesel, "Jan", "Kowalski")
         );
 
         mockMvc.perform(get("/api/v1/patients/{pesel}", pesel).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.pesel").value("01234567890"))
+                .andExpect(jsonPath("$.pesel").value(pesel))
                 .andExpect(jsonPath("$.name").value("Jan"))
                 .andExpect(jsonPath("$.surname").value("Kowalski"));
     }
 
     @Test
     void getPatientByPesel_shouldNotFound_whenNotFound() throws Exception {
-        String pesel = "01234567890";
+        String pesel = "80070881314";
         when(patientService.getPatient(pesel)).thenThrow(new PatientNotFoundException(""));
 
         mockMvc.perform(get("/api/v1/patients/{pesel}", pesel).contentType(MediaType.APPLICATION_JSON))
@@ -82,26 +81,47 @@ class PatientControllerTest {
     }
 
     @Test
+    void getPatientByPesel_shouldReturnBadRequest_ifPeselIsInvalid() throws Exception {
+        String pesel = "01234567890";
+
+        mockMvc.perform(get("/api/v1/patients/{pesel}", pesel).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void postPatient_shouldAddNewPatient() throws Exception {
+        String pesel = "80070881314";
         when(patientService.addPatient(any(PatientDto.class))).thenReturn(
-                new PatientDto("01234567890", "Jan", "Kowalski")
+                new PatientDto(pesel, "Jan", "Kowalski")
         );
-        PatientDto patientDto = new PatientDto("12345678900", "Jan2", "Kowalski2");
+        PatientDto patientDto = new PatientDto(pesel, "Jan", "Kowalski");
 
         mockMvc.perform(
                         post("/api/v1/patients")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(patientDto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.pesel").value("01234567890"))
+                .andExpect(jsonPath("$.pesel").value(pesel))
                 .andExpect(jsonPath("$.name").value("Jan"))
                 .andExpect(jsonPath("$.surname").value("Kowalski"));
     }
 
     @Test
+    void postPatient_shouldReturnBadRequest_ifBodyIsInvalid() throws Exception {
+        String invalidPesel = "01234567890";
+        PatientDto patientDto = new PatientDto(invalidPesel, "", "");
+
+        mockMvc.perform(
+                        post("/api/v1/patients")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(patientDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void postPatient_shouldConflict_onRedundantPost() throws Exception {
         when(patientService.addPatient(any(PatientDto.class))).thenThrow(new PatientAlreadyExistsException(""));
-        PatientDto patientDto = new PatientDto("12345678900", "Jan2", "Kowalski2");
+        PatientDto patientDto = new PatientDto("80070881314", "Jan2", "Kowalski2");
 
         mockMvc.perform(
                         post("/api/v1/patients")
@@ -115,7 +135,7 @@ class PatientControllerTest {
     void getPatientReceiptsByPesel_shouldReturnReceiverReceipts() throws Exception {
         UUID uuid1 = UUID.fromString("63248786-0fdb-4f22-9fe8-2df997686a7d");
         UUID uuid2 = UUID.fromString("4310ea1b-0854-463c-b064-abeb8f46aaad");
-        String pesel = "0123456789";
+        String pesel = "80070881314";
         when(receiptService.getPatientsReceipts(pesel)).thenReturn(List.of(
                         new ReceiptDto(uuid1, pesel, "ABC", 500),
                         new ReceiptDto(uuid2, pesel, "XYZ", 600)
@@ -137,10 +157,30 @@ class PatientControllerTest {
     }
 
     @Test
-    void deletePatient_shouldDelete() throws Exception {
+    void getPatientReceiptsByPesel_shouldReturnBadRequest_ifPeselIsInvalid() throws Exception {
+        String invalidPesel = "01234567890";
         mockMvc.perform(
-                delete("/api/v1/patients/01234567890")
+                        get("/api/v1/patients/{pesel}/receipts", invalidPesel)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deletePatient_shouldDelete() throws Exception {
+        String pesel = "80070881314";
+        mockMvc.perform(
+                delete("/api/v1/patients/{pesel}", pesel)
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isNoContent());
+        verify(patientService).removePatient(pesel);
+    }
+
+    @Test
+    void deletePatient_shouldReturnBadRequest_idPeselIsInvalid() throws Exception {
+        String invalidPesel = "01234567890";
+        mockMvc.perform(
+                delete("/api/v1/patients/{pesel}", invalidPesel)
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isBadRequest());
     }
 }
