@@ -29,7 +29,7 @@ public class ReceiptService {
      * @return a list of receipts associated with patient
      * @throws PatientNotFoundException if patient does not exist
      */
-    List<ReceiptDto> getPatientsReceipts(String pesel) {
+    public List<ReceiptDto> getPatientsReceipts(String pesel) {
         if (!patientRepository.patientExists(pesel)) {
             throw new PatientNotFoundException("patient with pesel " + pesel + " does not exist");
         }
@@ -42,7 +42,7 @@ public class ReceiptService {
      * @param newReceiptDto new receipt
      * @return Added receipt
      */
-    ReceiptDto addReceipt(NewReceiptDto newReceiptDto) {
+    public ReceiptDto addReceipt(NewReceiptDto newReceiptDto) {
         return ReceiptMapper.toDto(receiptRepository.save(NewReceiptMapper.fromDto(newReceiptDto)));
     }
 
@@ -51,7 +51,7 @@ public class ReceiptService {
      *
      * @param id receipt id
      */
-    void removeReceipt(UUID id) {
+    public void removeReceipt(UUID id) {
         receiptRepository.deleteById(id);
     }
 }
