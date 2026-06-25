@@ -1,11 +1,12 @@
 package com.dudaj.cezspringapp.repository;
 
 import com.dudaj.cezspringapp.model.Patient;
-import org.springframework.context.i18n.LocaleContextHolder;
-
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
@@ -25,8 +26,7 @@ public class PatientRepository {
     public List<Patient> findAll() {
         return new LinkedList<>(peselToPatientMap.values());
     }
-
-
+    
     /**
      * Checks if patient with the specified PESEL exists.
      *
@@ -35,44 +35,6 @@ public class PatientRepository {
      */
     public boolean patientExists(String pesel) {
         return peselToPatientMap.containsKey(pesel);
-    }
-
-    /**
-     * finds all patients which names contain a specified name fragment.
-     * Checking algorithm is case-insensitive and uses default spring locale.
-     *
-     * @param name search query
-     * @return a list of found patients that match the query
-     */
-    public List<Patient> findByNameLike(String name) {
-        LinkedList<Patient> result = new LinkedList<>();
-        Locale locale = LocaleContextHolder.getLocale();
-        name = name.toLowerCase(locale);
-        for (Patient p : peselToPatientMap.values()) {
-            if (p.getName().toLowerCase(locale).contains(name)) {
-                result.add(p);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Finds all patients which surnames contain a specified surname fragment.
-     * Checking algorithm is case-insensitive and uses default spring locale.
-     *
-     * @param surname search query
-     * @return a list of found patients that match the query. If none were found, an empty list is returned
-     */
-    public List<Patient> findBySurnameLike(String surname) {
-        LinkedList<Patient> result = new LinkedList<>();
-        Locale locale = LocaleContextHolder.getLocale();
-        surname = surname.toLowerCase(locale);
-        for (Patient p : peselToPatientMap.values()) {
-            if (p.getSurname().toLowerCase(locale).contains(surname)) {
-                result.add(p);
-            }
-        }
-        return result;
     }
 
     /**
