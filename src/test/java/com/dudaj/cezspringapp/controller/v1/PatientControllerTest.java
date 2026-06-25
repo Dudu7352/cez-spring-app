@@ -1,11 +1,11 @@
 package com.dudaj.cezspringapp.controller.v1;
 
 import com.dudaj.cezspringapp.dto.PatientDto;
-import com.dudaj.cezspringapp.dto.ReceiptDto;
+import com.dudaj.cezspringapp.dto.PrescriptionDto;
 import com.dudaj.cezspringapp.exception.PatientAlreadyExistsException;
 import com.dudaj.cezspringapp.exception.PatientNotFoundException;
 import com.dudaj.cezspringapp.service.PatientService;
-import com.dudaj.cezspringapp.service.ReceiptService;
+import com.dudaj.cezspringapp.service.PrescriptionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -36,7 +36,7 @@ class PatientControllerTest {
     private PatientService patientService;
 
     @MockitoBean
-    private ReceiptService receiptService;
+    private PrescriptionService prescriptionService;
 
     @Test
     void getPatients_shouldReturnAllPatients() throws Exception {
@@ -132,18 +132,18 @@ class PatientControllerTest {
 
 
     @Test
-    void getPatientReceiptsByPesel_shouldReturnReceiverReceipts() throws Exception {
+    void getPatientPrescriptionsByPesel_shouldReturnReceiverPrescriptions() throws Exception {
         UUID uuid1 = UUID.fromString("63248786-0fdb-4f22-9fe8-2df997686a7d");
         UUID uuid2 = UUID.fromString("4310ea1b-0854-463c-b064-abeb8f46aaad");
         String pesel = "80070881314";
-        when(receiptService.getPatientsReceipts(pesel)).thenReturn(List.of(
-                        new ReceiptDto(uuid1, pesel, "ABC", 500),
-                        new ReceiptDto(uuid2, pesel, "XYZ", 600)
+        when(prescriptionService.getPatientsPrescriptions(pesel)).thenReturn(List.of(
+                        new PrescriptionDto(uuid1, pesel, "ABC", 500),
+                        new PrescriptionDto(uuid2, pesel, "XYZ", 600)
                 )
         );
 
         mockMvc.perform(
-                        get("/api/v1/patients/{pesel}/receipts", pesel)
+                        get("/api/v1/patients/{pesel}/prescriptions", pesel)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(uuid1.toString()))
@@ -157,10 +157,10 @@ class PatientControllerTest {
     }
 
     @Test
-    void getPatientReceiptsByPesel_shouldReturnBadRequest_ifPeselIsInvalid() throws Exception {
+    void getPatientPrescriptionsByPesel_shouldReturnBadRequest_ifPeselIsInvalid() throws Exception {
         String invalidPesel = "01234567890";
         mockMvc.perform(
-                        get("/api/v1/patients/{pesel}/receipts", invalidPesel)
+                        get("/api/v1/patients/{pesel}/prescriptions", invalidPesel)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
