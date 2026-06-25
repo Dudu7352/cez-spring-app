@@ -5,10 +5,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 
 import org.springframework.stereotype.Repository;
 
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
@@ -25,7 +22,7 @@ public class PatientRepository {
      *
      * @return a list of all patients
      */
-    public LinkedList<Patient> findAll() {
+    public List<Patient> findAll() {
         return new LinkedList<>(peselToPatientMap.values());
     }
 
@@ -47,7 +44,7 @@ public class PatientRepository {
      * @param name search query
      * @return a list of found patients that match the query
      */
-    public LinkedList<Patient> findByNameLike(String name) {
+    public List<Patient> findByNameLike(String name) {
         LinkedList<Patient> result = new LinkedList<>();
         Locale locale = LocaleContextHolder.getLocale();
         name = name.toLowerCase(locale);
@@ -66,7 +63,7 @@ public class PatientRepository {
      * @param surname search query
      * @return a list of found patients that match the query. If none were found, an empty list is returned
      */
-    public LinkedList<Patient> findBySurnameLike(String surname) {
+    public List<Patient> findBySurnameLike(String surname) {
         LinkedList<Patient> result = new LinkedList<>();
         Locale locale = LocaleContextHolder.getLocale();
         surname = surname.toLowerCase(locale);
