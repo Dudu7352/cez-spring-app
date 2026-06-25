@@ -3,7 +3,6 @@ package com.dudaj.cezspringapp.repository;
 import com.dudaj.cezspringapp.model.Patient;
 import org.springframework.stereotype.Repository;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,9 +23,9 @@ public class PatientRepository {
      * @return a list of all patients
      */
     public List<Patient> findAll() {
-        return new LinkedList<>(peselToPatientMap.values());
+        return peselToPatientMap.values().stream().toList();
     }
-    
+
     /**
      * Checks if patient with the specified PESEL exists.
      *

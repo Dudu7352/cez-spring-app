@@ -4,10 +4,7 @@ import com.dudaj.cezspringapp.model.NewPrescription;
 import com.dudaj.cezspringapp.model.Prescription;
 import org.springframework.stereotype.Repository;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
@@ -29,7 +26,7 @@ public class PrescriptionRepository {
     public List<Prescription> findByPesel(String pesel) {
         List<Prescription> prescriptions = peselToPrescriptionsMap.get(pesel);
         if (prescriptions == null) {
-            return new LinkedList<>();
+            return Collections.emptyList();
         }
         return prescriptions;
     }
