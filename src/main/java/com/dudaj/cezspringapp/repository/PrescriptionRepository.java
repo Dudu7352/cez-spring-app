@@ -2,6 +2,7 @@ package com.dudaj.cezspringapp.repository;
 
 import com.dudaj.cezspringapp.model.NewPrescription;
 import com.dudaj.cezspringapp.model.Prescription;
+import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -75,9 +76,11 @@ public class PrescriptionRepository {
      * @param pesel patient's PESEL number
      */
     public void deleteByPesel(String pesel) {
-        List<Prescription> prescriptions = peselToPrescriptionsMap.remove(pesel);
-        for (Prescription prescription : prescriptions) {
-            idToPeselMap.remove(prescription.getId());
+        @Nullable List<Prescription> prescriptions = peselToPrescriptionsMap.remove(pesel);
+        if (prescriptions != null) {
+            for (Prescription prescription : prescriptions) {
+                idToPeselMap.remove(prescription.getId());
+            }
         }
     }
 }
