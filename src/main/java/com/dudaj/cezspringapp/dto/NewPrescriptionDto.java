@@ -1,14 +1,11 @@
 package com.dudaj.cezspringapp.dto;
 
+import com.dudaj.cezspringapp.validator.ValidPesel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
-import java.util.UUID;
-
-public record ReceiptDto(
-        UUID id,
-
-        @NotBlank
+public record NewPrescriptionDto(
+        @ValidPesel
         String pesel,
 
         @NotBlank
@@ -18,3 +15,4 @@ public record ReceiptDto(
         double doseMilligrams
 ) {
 }
+

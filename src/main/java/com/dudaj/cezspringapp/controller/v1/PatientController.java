@@ -1,9 +1,9 @@
 package com.dudaj.cezspringapp.controller.v1;
 
 import com.dudaj.cezspringapp.dto.PatientDto;
-import com.dudaj.cezspringapp.dto.ReceiptDto;
+import com.dudaj.cezspringapp.dto.PrescriptionDto;
 import com.dudaj.cezspringapp.service.PatientService;
-import com.dudaj.cezspringapp.service.ReceiptService;
+import com.dudaj.cezspringapp.service.PrescriptionService;
 import com.dudaj.cezspringapp.validator.ValidPesel;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class PatientController {
     @Autowired
     private final PatientService patientService;
     @Autowired
-    private final ReceiptService receiptService;
+    private final PrescriptionService prescriptionService;
 
     @GetMapping
     public List<PatientDto> getPatients() {
@@ -39,9 +39,9 @@ public class PatientController {
         return patientService.getPatient(patientPesel);
     }
 
-    @GetMapping("/{patientPesel}/receipts")
-    public List<ReceiptDto> getPatientReceiptsByPesel(@PathVariable @ValidPesel String patientPesel) {
-        return receiptService.getPatientsReceipts(patientPesel);
+    @GetMapping("/{patientPesel}/prescriptions")
+    public List<PrescriptionDto> getPatientPrescriptionsByPesel(@PathVariable @ValidPesel String patientPesel) {
+        return prescriptionService.getPatientsPrescriptions(patientPesel);
     }
 
     @DeleteMapping("/{patientPesel}")

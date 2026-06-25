@@ -6,7 +6,7 @@ import com.dudaj.cezspringapp.exception.PatientNotFoundException;
 import com.dudaj.cezspringapp.mapper.PatientMapper;
 import com.dudaj.cezspringapp.model.Patient;
 import com.dudaj.cezspringapp.repository.PatientRepository;
-import com.dudaj.cezspringapp.repository.ReceiptRepository;
+import com.dudaj.cezspringapp.repository.PrescriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class PatientService {
     @Autowired
     private final PatientRepository patientRepository;
     @Autowired
-    private final ReceiptRepository receiptRepository;
+    private final PrescriptionRepository prescriptionRepository;
 
     /**
      * Retrieves a patient with the specified PESEL number.
@@ -62,12 +62,12 @@ public class PatientService {
     }
 
     /**
-     * Removes a patient and every receipt associated with his PESEL. This action is idempotent.
+     * Removes a patient and every prescription associated with his PESEL. This action is idempotent.
      *
      * @param pesel patient's PESEL
      */
     public void removePatient(String pesel) {
         patientRepository.deleteByPesel(pesel);
-        receiptRepository.deleteByPesel(pesel);
+        prescriptionRepository.deleteByPesel(pesel);
     }
 }

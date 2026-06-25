@@ -1,9 +1,9 @@
 package com.dudaj.cezspringapp.controller.v1;
 
-import com.dudaj.cezspringapp.dto.NewReceiptDto;
-import com.dudaj.cezspringapp.dto.ReceiptDto;
+import com.dudaj.cezspringapp.dto.NewPrescriptionDto;
+import com.dudaj.cezspringapp.dto.PrescriptionDto;
 import com.dudaj.cezspringapp.service.PatientService;
-import com.dudaj.cezspringapp.service.ReceiptService;
+import com.dudaj.cezspringapp.service.PrescriptionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ReceiptController.class)
-public class ReceiptControllerTest {
+@WebMvcTest(PrescriptionController.class)
+public class PrescriptionControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -34,30 +34,30 @@ public class ReceiptControllerTest {
     private PatientService patientService;
 
     @MockitoBean
-    private ReceiptService receiptService;
+    private PrescriptionService prescriptionService;
 
     @Test
-    void deleteReceipt_shouldDelete() throws Exception {
+    void deletePrescription_shouldDelete() throws Exception {
         UUID uuid = UUID.fromString("4310ea1b-0854-463c-b064-abeb8f46aaad");
 
-        mockMvc.perform(delete("/api/v1/receipts/{id}", uuid.toString())
+        mockMvc.perform(delete("/api/v1/prescriptions/{id}", uuid.toString())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
-        verify(receiptService).removeReceipt(uuid);
+        verify(prescriptionService).removePrescription(uuid);
     }
 
     @Test
-    void postReceipt_shouldAddReceipt() throws Exception {
+    void postPrescription_shouldAddPrescription() throws Exception {
         String pesel = "80070881314";
-        NewReceiptDto newReceiptDto = new NewReceiptDto(pesel, "ABC", 500d);
+        NewPrescriptionDto newPrescriptionDto = new NewPrescriptionDto(pesel, "ABC", 500d);
         UUID uuid = UUID.fromString("4310ea1b-0854-463c-b064-abeb8f46aaad");
-        when(receiptService.addReceipt(any(NewReceiptDto.class))).thenReturn(
-                new ReceiptDto(uuid, pesel, "ABCD", 550d)
+        when(prescriptionService.addPrescription(any(NewPrescriptionDto.class))).thenReturn(
+                new PrescriptionDto(uuid, pesel, "ABCD", 550d)
         );
 
-        mockMvc.perform(post("/api/v1/receipts")
+        mockMvc.perform(post("/api/v1/prescriptions")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newReceiptDto)))
+                        .content(objectMapper.writeValueAsString(newPrescriptionDto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(uuid.toString()))
                 .andExpect(jsonPath("$.pesel").value(pesel))
@@ -67,12 +67,12 @@ public class ReceiptControllerTest {
     }
 
     @Test
-    void postReceipt_shouldReturnBadRequest_ifBodyIsInvalid() throws Exception {
+    void postPrescription_shouldReturnBadRequest_ifBodyIsInvalid() throws Exception {
         String pesel = "01234567890";
-        NewReceiptDto newReceiptDto = new NewReceiptDto(pesel, "ABC", 500d);
-        mockMvc.perform(post("/api/v1/receipts")
+        NewPrescriptionDto newPrescriptionDto = new NewPrescriptionDto(pesel, "ABC", 500d);
+        mockMvc.perform(post("/api/v1/prescriptions")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newReceiptDto)))
+                        .content(objectMapper.writeValueAsString(newPrescriptionDto)))
                 .andExpect(status().isBadRequest());
     }
 }

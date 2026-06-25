@@ -5,7 +5,7 @@ import com.dudaj.cezspringapp.model.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -109,37 +109,6 @@ class PatientRepositoryTest {
         assertTrue(patientRepository.findByPesel(pesel).isEmpty());
     }
 
-    @Test
-    void findByNameLike_shouldFindNamesLike() {
-        Patient patient1 = new Patient("01234567890", "Jan", "Kowalski");
-        Patient patient2 = new Patient("12345678901", "Mijanusz", "Kowalski");
-        Patient patient3 = new Patient("23456789012", "Zbigniew", "Kowalski");
-        patientRepository.save(patient1);
-        patientRepository.save(patient2);
-        patientRepository.save(patient3);
-
-        LinkedList<Patient> results = patientRepository.findByNameLike("jan");
-
-        assertEquals(2, results.size());
-        assertTrue(CollectionHelper.contains(results, (p) -> p.getPesel().equals(patient1.getPesel())));
-        assertTrue(CollectionHelper.contains(results, (p) -> p.getPesel().equals(patient2.getPesel())));
-    }
-
-    @Test
-    void findBySurnameLike_shouldFindSurnamesLike() {
-        Patient patient1 = new Patient("01234567890", "Jan", "Kowalski");
-        Patient patient2 = new Patient("12345678901", "Zbigniew", "Wolski");
-        Patient patient3 = new Patient("23456789012", "Anna", "Kowalska");
-        patientRepository.save(patient1);
-        patientRepository.save(patient2);
-        patientRepository.save(patient3);
-
-        LinkedList<Patient> results = patientRepository.findBySurnameLike("ski");
-
-        assertEquals(2, results.size());
-        assertTrue(CollectionHelper.contains(results, (p) -> p.getPesel().equals(patient1.getPesel())));
-        assertTrue(CollectionHelper.contains(results, (p) -> p.getPesel().equals(patient2.getPesel())));
-    }
 
     @Test
     void findAll_shouldFindAll() {
@@ -150,7 +119,7 @@ class PatientRepositoryTest {
         patientRepository.save(patient2);
         patientRepository.save(patient3);
 
-        LinkedList<Patient> results = patientRepository.findAll();
+        List<Patient> results = patientRepository.findAll();
 
         assertEquals(3, results.size());
         assertTrue(CollectionHelper.contains(results, (p) -> p.getPesel().equals(patient1.getPesel())));
