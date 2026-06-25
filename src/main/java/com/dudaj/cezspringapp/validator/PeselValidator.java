@@ -8,21 +8,6 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 
 public class PeselValidator implements ConstraintValidator<ValidPesel, String> {
-    @Override
-    public void initialize(ValidPesel constraintAnnotation) {
-        ConstraintValidator.super.initialize(constraintAnnotation);
-    }
-
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (!value.matches("\\d{11}")) {
-            return false;
-        }
-        int[] digits = value.chars().map(Character::getNumericValue).toArray();
-        
-        return hasValidChecksum(digits) && hasCorrectDate(digits);
-    }
-
     private static boolean hasValidChecksum(int[] digits) {
         int[] weights = {1, 3, 7, 9, 1, 3, 7, 9, 1, 3};
         int sum = 0;
@@ -69,5 +54,20 @@ public class PeselValidator implements ConstraintValidator<ValidPesel, String> {
         } catch (DateTimeException e) {
             return false;
         }
+    }
+
+    @Override
+    public void initialize(ValidPesel constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
+    }
+
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (!value.matches("\\d{11}")) {
+            return false;
+        }
+        int[] digits = value.chars().map(Character::getNumericValue).toArray();
+
+        return hasValidChecksum(digits) && hasCorrectDate(digits);
     }
 }
