@@ -12,4 +12,5 @@ open module cez.spring.app {
     requires java.sql;
     requires com.fasterxml.jackson.annotation;
     requires jakarta.validation;
+    requires jakarta.annotation;
 }
